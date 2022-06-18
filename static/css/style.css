@@ -1,0 +1,22 @@
+
+body{
+    background-color: #ffefef;
+}
+
+.col{
+    /*margin: 30px;*/
+}
+
+footer{
+    position: center;
+    bottom: auto;
+}
+
+.kost_footer{
+    height: 22px;
+    position: fixed;
+    font-size: 15px;
+    bottom: 10px;
+    background-color: aquamarine;
+    text-align: center;
+}
