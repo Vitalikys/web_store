@@ -6,7 +6,18 @@ body{
 .col{
     /*margin: 30px;*/
 }
-
+/*# fill image in card */
+.fill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden
+}
+.fill img {
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%
+}
 footer{
     position: center;
     bottom: auto;

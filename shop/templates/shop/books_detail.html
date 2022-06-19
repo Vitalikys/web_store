@@ -1,5 +1,5 @@
 {% extends 'index.html' %}
-
+{% load static %}
 
 {% block title %} {{ object.title }}{% endblock %}
 
@@ -11,11 +11,12 @@
 <h2>{{object.title}} </h2>
     <p>{% if object.photo %}
         <img src="{{ object.photo.url }}" style="float: left" title="{{ object.photo.url }}" alt="{{ object.photo.url }}"
-        width="350" class="col-md-5 mr-3">
+        width="250" class="col-md-5 mr-3">
     {% else %}
         <img src="https://picsum.photos/200/200?random=1" style="float: left" title="default_rand_photo" alt="фото заглушка"
         width="350" class="col-md-5 mr-3">
-    {% endif %}
-    {{ object.content |linebreaksbr }}</p>
+    {% endif %}</p>
+    <p>  {{ object.description |linebreaksbr }}</p>
+
 
 {% endblock %}

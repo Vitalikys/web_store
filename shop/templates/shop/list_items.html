@@ -1,51 +1,49 @@
 {% extends 'index.html' %}
 {% load hitcount_tags %}
-{% block title %}{{object.title}}{% endblock %}
+{% load static %}
+{% block title %}{{ object.title }}{% endblock %}
 
 {% block sidebar %} sidebar here {% endblock %}
-<!--    {% include 'sidebar.html' %}-->
+
 {% block card_items_container %}
 
-<div class="container">
+    <div class="container">
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        {% for book in object_list %}
-        <div class="col" style="margin-bottom: 10px">
-            <div class="card shadow-sm">
-                <p class="card-text">{{book.title}}</p>
-
-                <img src="{{book.photo}}" title="default_rand_photo" alt="фото заглушка">
-                <div class="card-body">
-                    <p class="card-text">{{book.description}} This content is a little bit longer.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <a href="{% url 'book_detail_url' book.pk %}">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
-                            </a>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Buy</button>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for book in object_list %}
+                <div class="col" style="margin-bottom: 10px">
+                    <div class="card shadow-sm">
+                        <p class="card-text">{{ book.title }}</p>
+                        <div class="card-body">
+                            <div class="media">
+                            <div class="fill">
+                                {% if book.photo %}
+                                    <img src="{{ book.photo.url }}" title="any photo" alt="alt"
+                                         width="255" class="float-left mr-3 ">
+                                {% else %}
+                                    <img src="https://img.yakaboo.ua/media/catalog/product/cache/1/image/398x565/31b681157c4c1a5551b0db4896e7972f/i/m/img_16351.jpg" title="default_photo"
+                                         alt="фото заглушка"
+                                         width="290" class="float-left mr-3">
+                                {% endif %}
+                            </div>
+                            </div>
+                            <p class="card-text">{{ book.description }} This content is a little bit longer.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a href="{% url 'book_detail_url' book.pk %}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">View</button>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Add to cart</button>
+                                </div>
+                                <small class="text-muted">views: {% get_hit_count for book %}</small>
+                            </div>
                         </div>
-                        <!--                        <a href="{{ book.get_absolute_url }}" class="btn btn-primary">Read morе...</a>-->
-                        <small class="text-muted">views: {% get_hit_count for book %}</small>
                     </div>
                 </div>
-            </div>
+
+            {% endfor %}
+
         </div>
-
-        {% endfor %}
-
     </div>
-</div>
 
 {% endblock %}
-
-<!--
-                ''' <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                </svg>'''
-
-
-
--->

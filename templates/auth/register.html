@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+
+{% block title %} Registration : {{ block.super }}{% endblock %}
+
+
+{% block sidebar %}
+
+{% endblock %}
+
+
+{% block card_items_container %}
+    <h4> Registration New Customer </h4>
+    <form method = "post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type = 'submit' class="btn btn-outline-primary"> Registrate</button>
+    </form>
+{% endblock %}

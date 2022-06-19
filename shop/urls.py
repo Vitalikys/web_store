@@ -7,3 +7,4 @@ urlpatterns = [
     path('detail/<int:pk>/' , BookDetail.as_view(), name= 'book_detail_url'),
 
 ]
+

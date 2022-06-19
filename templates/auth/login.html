@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block title %} Login: {{ block.super }}{% endblock %}
+
+
+{% block sidebar %}
+    <h5>here is side</h5>
+{% endblock %}
+
+
+{% block card_items_container %}
+    <h4> login form here</h4>
+{#    <form action="{% url 'login' %}" method="post">#}
+    <form method="post">
+        {% csrf_token %}
+        {{ login_form }}
+{#        {{ login_form.as_p }}#}
+        <button type="submit"> login </button>
+        <p>text p</p>
+    </form>
+
+{% endblock %}
