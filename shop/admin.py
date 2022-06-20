@@ -5,7 +5,7 @@ from .models import *
 
 @admin.register(Books)
 class BooksAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title','code',  'description', 'price','photo' ,'get_photo','is_availible')
+    list_display = ('id', 'title','code', 'price','photo' ,'get_photo','is_availible')
     # list_display = '__all__'
     fields = ('title', 'code', 'description', 'price','photo' ,'get_photo','is_availible')
     list_editable = ('is_availible', 'price')

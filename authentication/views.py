@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.shortcuts import render
 
+
 from authentication.forms import LoginForm, UserRegisterForm
 
 
@@ -41,3 +42,4 @@ def user_logout(request):
     logout(request)
     # return redirect('auth/login.html')
     return redirect('list_items')
+

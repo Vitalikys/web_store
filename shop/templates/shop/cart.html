@@ -1,0 +1,42 @@
+{% extends 'index.html' %}
+
+{% block card_items_container %}
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="cart_info">
+                <table class="table table-hover">
+                    <thead class="text-center">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" style="width: 350px">Name</th>
+                        <th scope="col" style="width: 110px">Qty</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                    </thead>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            {#                            <td class="cart_coverpage"><a href=""><img src="{{ book.coverpage.url }}"></a></td>#}
+                            <td>{{ item.product |truncatechars:39 }}</td>
+                            <td class="cart_quantity"><input type="text" name="qty" value="{{ item.quantity }}"
+                                                             style="width: 50px"></td>
+                            <td> {{ item.price }} </td>
+                            <td>  {{ item.amount }}</td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="continue_or_next text-center">
+                    <a href="" class="btn _to_shope">Continue to Shop</a>
+                    <a href="" class="btn _to_continue">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4" id="abc">
+
+        </div>
+    </div>
+{% endblock %}
+

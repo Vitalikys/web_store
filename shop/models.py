@@ -1,8 +1,13 @@
+from decimal import Decimal
+
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 # Create your models here.
+from django.db.models import Sum
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.urls import reverse
 from hitcount.models import HitCount, HitCountMixin
 
@@ -32,13 +37,14 @@ class Writer(models.Model):
         return self.name
 '''
 
+
 class Books(models.Model, HitCountMixin):
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, db_index=True)
     code = models.CharField(max_length=255, verbose_name='product_code')
     # writer = models.ForeignKey(Writer, on_delete=models.CASCADE)
     # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
-    photo = models.ImageField(upload_to='photos/%Y/', blank= True)
+    photo = models.ImageField(upload_to='photos/%Y/', blank=True)
     price = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     # created = models.DateTimeField(auto_now_add=True)
     # updated = models.DateField(auto_now=True)
@@ -71,7 +77,7 @@ class Product(models.Model):
         ordering = ['pk']
 
     def __str__(self):
-        return f'{self.user} --- {self.time.ctime()} --- {self.amount}'
+        return f'{self.user
 '''
 
 
@@ -83,10 +89,16 @@ class Payment(models.Model):
     comment = models.TextField(blank=True, null=True)
 
     class Meta:
-        ordering = ['pk'] # сортування
+        ordering = ['pk']  # сортування
         # відображення в адмінці
+
     def __str__(self):
-        return f'{self.user} --- {self.time.ctime()} --- {self.amount}'
+        return f'{self.user} --- {self.amount}'
+
+    @staticmethod
+    def get_balance(user: User):
+        amount = Payment.objects.filter(user=user).aggregate(Sum('amount'))['amount__sum']
+        return amount or Decimal(0)
 
 
 # Таблиця заказу + CART
@@ -111,13 +123,37 @@ class Order(models.Model):
         ordering = ['pk']
 
     def __str__(self):
-        return f'{self.user} --- {self.time.ctime()} --- {self.amount}'
+        return f'{self.user} --- {self.amount} --- {self.status}'
+
+    @staticmethod
+    def get_cart(user: User):
+        cart = Order.objects.filter(user=user,
+                                    status=Order.STATUS_CART).first()
+        if not cart:
+            cart = Order.objects.create(user=user,
+                                        status=Order.STATUS_CART, amount=0)
+        return cart
+
+    def get_amount(self):  # сума всіх
+        amount = Decimal(0)
+        for item in self.orderitem_set.all():
+            amount += item.amount
+        return amount
+
+    def make_order(self):
+        items = self.orderitem_set.all()
+        if items and self.status == Order.STATUS_CART:
+            self.status = Order.STATUS_WAITING_FOR_PAYMENT
+            self.save()
 
 
-'''При каждом новом добавлении (удалении, изменении) количества (или цены) товара, общая сумма заказа должна автоматически пересчитываться'''
+'''
+При каждом новом добавлении (удалении, изменении) количества (или цены) товара, общая сумма заказа должна автоматически пересчитываться'''
+
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Books, on_delete=models.PROTECT)
+    product = models.ForeignKey(Books, on_delete=models.PROTECT, db_index=True)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     discount = models.DecimalField(max_digits=20, decimal_places=2, default=0)
@@ -126,4 +162,22 @@ class OrderItem(models.Model):
         ordering = ['pk']
 
     def __str__(self):
-        return f'{self.user} --- {self.time.ctime()} --- {self.amount}'
+        return f'{self.quantity} --- {self.price} --- {self.discount}'
+
+    @property
+    def amount(self):
+        return self.quantity * (self.price - self.discount)
+
+
+@receiver(post_save, sender=OrderItem)
+def recalculate_order_amount_after_save(sender, instance, **kwargs):
+    order = instance.order
+    order.amount = order.get_amount()
+    order.save()
+
+
+@receiver(post_delete, sender=OrderItem)
+def recalculate_order_amount_after_delete(sender, instance, **kwargs):
+    order = instance.order
+    order.amount = order.get_amount()
+    order.delete()
