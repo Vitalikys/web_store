@@ -28,12 +28,13 @@
                                     {% endif %}
                                 </div>
                             </div>
+                        <h5>Ціна:{{ book.price }}грн.</h5>
                             <p class="card-text">{{ book.description |truncatewords:20}} This content is a little bit longer.</p>
                             <form method="post" action="{% url 'add_item_to_cart' book.pk %}">
                                 {% csrf_token %}
 
                                 <label class="form-label" for="id_quantity">кількість:</label>
-                                <input style="size: 20px" type="number" name="quantity" value="1" min="1" required id="id_quantity">
+                                <input style="width: 55px" type="number" name="quantity" value="1" min="1" required id="id_quantity">
                                 
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">

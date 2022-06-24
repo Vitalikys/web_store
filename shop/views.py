@@ -27,9 +27,11 @@ class BookDetail(HitCountDetailView):
 
 @login_required(login_url=reverse_lazy('login'))
 def cart_view(request):
+    my_balance  = Payment.get_balance(request.user)
     cart = Order.get_cart(request.user)
     items = cart.orderitem_set.all()
     context = {
+        'my_balance':my_balance,
         'cart': cart,
         'items': items,
     }
@@ -49,19 +51,40 @@ def add_item_to_cart(request, pk):
                                           quantity=quantity,
                                           price=product.price)
                 cart.save()
-                return redirect('cart_url')
+                return redirect('list_items')
         else:
             pass
     return redirect('list_items')
 
+# DoesNotExist at /delete_item/9  #ERROR Order matching query does not exist.
 @method_decorator(login_required, name='dispatch')
 class CartDeleteItem(DeleteView):
     model = OrderItem
     template_name = 'shop/cart.html'
-    success_url = reverse_lazy('cart_view')
+    success_url = reverse_lazy('cart_url')
 
     # Проверка доступа
     def get_queryset(self):
         qs = super().get_queryset()
         qs.filter(order__user=self.request.user)
         return qs
+
+# спроба №2  . не працює    type object 'OrderItem' has no attribute 'object'
+# def cart_remove(request, pk):
+#     cart = OrderItem(request)
+#     book = get_object_or_404(Books, id=pk)
+#     cart.remove(book)
+#     return redirect('cart_url')
+def cart_remove(request, pk):
+    order = OrderItem.objects.get(id=pk)
+    order.delete()
+    return redirect('cart_url')
+
+@login_required(login_url=reverse_lazy('login'))
+def make_order(request):
+    cart = Order.get_cart(request.user)
+    cart.make_order()
+    return redirect('cart_url')
+
+def about(request):
+    return render(request, 'shop/about.html')

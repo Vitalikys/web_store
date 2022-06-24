@@ -1,0 +1,29 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block sidebar %} {% endblock %}
+
+{% block card_items_container %}
+    <h2>About page</h2>
+    <ul>
+        <li>контент книг взятий з <a href="https://www.yakaboo.ua/ua/knigi.html" target="_blank">www.yakaboo.ua/</a>
+        </li>
+        <li>youtube lessons - it4each <a href="https://www.youtube.com/c/IT4eachcom"
+                                         target="_blank">www.youtube.com/</a></li>
+        <li><a href="https://django.fun/ru/cbv/">django.fun</a></li>
+    </ul>
+    <h3>Contacts</h3>
+    <ul>
+        <li>Kostyreva Vitalii </li>
+        <li><a href="https://github.com/Vitalikys">github.com/Vitalik</a> </li>
+    </ul>
+    <h3>Unsolved Problems</h3>
+    <ul>
+        <li>не запускаються тасти tests.py ERROR: setUpClass (shop.tests.TestDatabase) @classmethod
+    def setUpClass(cls):</li>
+    <li>як не добавляти до .gitignore  __pycache__/ та інший непотріб </li>
+    <li> <b>!!Problem how to delete </b> item from cart!!
+    Oдин єдиний елемент без проблем видаляється </li>
+    </ul>
+{% endblock %}

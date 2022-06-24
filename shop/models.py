@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
-from django.db import models
+from django.db import models, transaction
 
 # Create your models here.
 from django.db.models import Sum
@@ -145,6 +145,7 @@ class Order(models.Model):
         if items and self.status == Order.STATUS_CART:
             self.status = Order.STATUS_WAITING_FOR_PAYMENT
             self.save()
+            auto_payment_unpaid_orders(self.user)
 
 
 '''
@@ -158,6 +159,7 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=20, decimal_places=2)
     discount = models.DecimalField(max_digits=20, decimal_places=2, default=0)
 
+    # objects = models.Manager() якщо помилка нема objects
     class Meta:
         ordering = ['pk']
 
@@ -168,7 +170,22 @@ class OrderItem(models.Model):
     def amount(self):
         return self.quantity * (self.price - self.discount)
 
+    def remove(self, book):
+        book_id = str(book.id)
+        if book_id in self.product:
+            del self.product[book_id]
+            self.save()
 
+@transaction.atomic() # контроль щоб все пройшло або нічого
+def auto_payment_unpaid_orders(user: User):
+    unpaid_orders = Order.objects.filter(user = user, status=Order.STATUS_WAITING_FOR_PAYMENT)
+    for order in unpaid_orders:
+        if Payment.get_balance(user) < order.amount:
+            break
+        order.payment = Payment.objects.all().last()
+        order.status = Order.STATUS_PAID
+        order.save()
+        Payment.objects.create(user=user, amount=-order.amount)
 @receiver(post_save, sender=OrderItem)
 def recalculate_order_amount_after_save(sender, instance, **kwargs):
     order = instance.order
@@ -181,3 +198,8 @@ def recalculate_order_amount_after_delete(sender, instance, **kwargs):
     order = instance.order
     order.amount = order.get_amount()
     order.delete()
+
+@receiver(post_delete, sender=Payment)
+def auto_pay(sender, instance, **kwargs):
+    user = instance.user
+    auto_payment_unpaid_orders(user)

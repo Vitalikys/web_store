@@ -2,7 +2,8 @@
 
 {% block card_items_container %}
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-11">
+            <h6>Ваш баланс {{ my_balance }} грн. {додається через адмінку}</h6>
             <div class="cart_info">
                 <table class="table table-hover">
                     <thead class="text-center">
@@ -12,6 +13,7 @@
                         <th scope="col" style="width: 110px">Qty</th>
                         <th scope="col">Price</th>
                         <th scope="col">Amount</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     {% for item in items %}
@@ -23,19 +25,32 @@
                                                              style="width: 50px"></td>
                             <td> {{ item.price }} </td>
                             <td>  {{ item.amount }}</td>
+                            <td>
+                                <form method="post" action="{% url 'cart_delete_item' item.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" style="color: blue"><u>delete</u></button>
+                                </form>
+                            </td>
+                            <td><a href="{% url 'cart_delete_item_2' item.pk %}" class="btn btn-danger"><i
+                                    class="fa fa-trash-o">X</i></a></td>
                         </tr>
-
                     {% endfor %}
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>Total: </b></td>
+                        <td>{{ cart.amount }}</td>
+                    </tr>
                     </tbody>
                 </table>
+
                 <div class="continue_or_next text-center">
-                    <a href="" class="btn _to_shope">Continue to Shop</a>
-                    <a href="" class="btn _to_continue">Proceed to Checkout</a>
+                    <a href="{% url 'list_items' %}" class="btn _to_shope">Continue to Shop</a>
+                    <a href="{% url 'make_order' %}" class="btn _to_continue">Process to Payment</a>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-4" id="abc">
-
         </div>
     </div>
 {% endblock %}
