@@ -24,7 +24,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
+'''
 class Writer(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150, unique=True, db_index=True)
@@ -35,13 +35,15 @@ class Writer(models.Model):
 
     def __str__(self):
         return self.name
-'''
+
+    def get_absolute_url(self):
+        return reverse('writer_url', kwargs={'slug': self.slug})
 
 
 class Books(models.Model, HitCountMixin):
     title = models.CharField(max_length=150, db_index=True)
     code = models.CharField(max_length=255, verbose_name='product_code')
-    # writer = models.ForeignKey(Writer, on_delete=models.CASCADE)
+    writer = models.ForeignKey(Writer, on_delete=models.CASCADE)
     # category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     photo = models.ImageField(upload_to='photos/%Y/', blank=True)
@@ -60,27 +62,6 @@ class Books(models.Model, HitCountMixin):
         return self.title
 
 
-'''
-# class - FOR CART ORDER
-class Product(models.Model):
-    name = models.CharField(max_length=255, verbose_name='product_name')
-    code = models.CharField(max_length=255, verbose_name='product_code')
-    price = models.DecimalField(max_digits=20, decimal_places=2)
-    unit = models.CharField(max_length=255, blank=True, null=True)
-    image_url = models.URLField(blank=True, null=True)
-    note = models.TextField(blank=True, null=True)
-
-    # опции метаданных, которые вы можете передать своей модели во внутренний class Meta
-    # https://django.fun/docs/django/ru/4.0/ref/models/options/
-    class Meta:
-        # Чтобы переопределить имя таблицы базыданных, используйте параметр # db_table
-        ordering = ['pk']
-
-    def __str__(self):
-        return f'{self.user
-'''
-
-
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # on_delete=models.CASCADE видаляється User + все що з ним звязане
@@ -88,6 +69,9 @@ class Payment(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     comment = models.TextField(blank=True, null=True)
 
+    # опции метаданных, которые вы можете передать своей модели во внутренний class Meta
+    # https://django.fun/docs/django/ru/4.0/ref/models/options/
+    # Чтобы переопределить имя таблицы базыданных, используйте параметр # db_table
     class Meta:
         ordering = ['pk']  # сортування
         # відображення в адмінці
@@ -169,6 +153,9 @@ class OrderItem(models.Model):
     @property
     def amount(self):
         return self.quantity * (self.price - self.discount)
+
+    def get_absolute_url(self):
+        return reverse('book_detail_url', kwargs={'pk':self.pk})
 
     def remove(self, book):
         book_id = str(book.id)

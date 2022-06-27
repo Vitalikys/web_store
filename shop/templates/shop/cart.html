@@ -20,13 +20,15 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             {#                            <td class="cart_coverpage"><a href=""><img src="{{ book.coverpage.url }}"></a></td>#}
-                            <td>{{ item.product |truncatechars:39 }}</td>
+                            <td>
+                                <a href="{% url 'book_detail_url' item.product_id %}"> {{ item.product |truncatechars:39 }} </a>
+                            </td>
                             <td class="cart_quantity"><input type="text" name="qty" value="{{ item.quantity }}"
                                                              style="width: 50px"></td>
                             <td> {{ item.price }} </td>
                             <td>  {{ item.amount }}</td>
                             <td>
-                                <form method="post" action="{% url 'cart_delete_item' item.pk %}">
+                                <form method="post" action="{% url 'cart_delete_item' item.id %}">
                                     {% csrf_token %}
                                     <button type="submit" style="color: blue"><u>delete</u></button>
                                 </form>

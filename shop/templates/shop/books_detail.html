@@ -11,11 +11,12 @@
 <h2>{{object.title}} </h2>
     <p>{% if object.photo %}
         <img src="{{ object.photo.url }}" style="float: left" title="{{ object.photo.url }}" alt="{{ object.photo.url }}"
-        width="250" class="col-md-5 mr-3">
+        width="200" class="col-md-5 mr-3">
     {% else %}
         <img src="https://picsum.photos/200/200?random=1" style="float: left" title="default_rand_photo" alt="фото заглушка"
-        width="350" class="col-md-5 mr-3">
+        width="250" class="col-md-5 mr-3">
     {% endif %}</p>
+    <h4>Ціна:{{ object.price }}грн.</h4>
     <p>  {{ object.description |linebreaksbr }}</p>
 
 

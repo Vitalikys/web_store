@@ -3,7 +3,7 @@
 {% load static %}
 {% block title %}{{ object.title }}{% endblock %}
 
-{% block sidebar %} sidebar here {% endblock %}
+{% block sidebar %} {% include 'shop/sidebar.html' %} {% endblock %}
 
 {% block card_items_container %}
 
@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                         <h5>Ціна:{{ book.price }}грн.</h5>
-                            <p class="card-text">{{ book.description |truncatewords:20}} This content is a little bit longer.</p>
+                            <p class="card-text">{{ book.description |safe|truncatewords:20}}</p>
                             <form method="post" action="{% url 'add_item_to_cart' book.pk %}">
                                 {% csrf_token %}
 
