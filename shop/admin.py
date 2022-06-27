@@ -5,9 +5,9 @@ from .models import *
 
 @admin.register(Books)
 class BooksAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title','code', 'price','photo' ,'get_photo','is_availible')
+    list_display = ('id', 'writer', 'title','code', 'price','photo' ,'get_photo','is_availible')
     # list_display = '__all__'
-    fields = ('title', 'code', 'description', 'price','photo' ,'get_photo','is_availible')
+    fields = ('title','writer', 'code', 'description', 'price','photo' ,'get_photo','is_availible')
     list_editable = ('is_availible', 'price')
     list_display_links = ('id', 'title')
     search_fields = ('title','description',)
@@ -25,6 +25,7 @@ its __init__() method, e.g. super(PersonAdmin, self).__init__(*args, **kwargs).
 
 
 # admin.site.register(Books, BooksAdmin)
+admin.site.register(Writer)
 admin.site.register(Payment)
 admin.site.register(OrderItem)
 admin.site.register(Order)

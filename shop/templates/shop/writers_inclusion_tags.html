@@ -1,0 +1,5 @@
+{% load categ_tags %}
+{% for writ in writers %}
+    <a href="{{writ.get_absolute_url}}"> {{ writ.name }}</a>
+    <a href="{% url 'writer_url' writ.slug %}">-{{ writ.name }}</a>
+{% endfor %}

@@ -1,7 +1,15 @@
+{% load categ_tags %}
+{% comment %} simple tag
 <ul class="list-group list-group-flush">
-    <li class="list-group-item"><h5>Category</h5></li>
-    {% for p in cat %}
-        <li class="list-group-item"><a href="{% url 'store:category' id=p.id %}">{{ p.name }}</a></li>
+    {% get_writers as wwwrrriters %}
+    <li class="list-group-item"><h5>Writer</h5></li>
+    {% get_writers %}
+    {% for wr in wwwrrriters %}
+        slug {{ wr.slug }}
+        <li class="list-group-item"><a href="{% url 'writer_url' wr.pk %}">-{{ wr.name }}</a></li>
     {% endfor %}
 
 </ul>
+{% endcomment %}
+{#<p>inclus tag </p>#}
+{% show_writers %}

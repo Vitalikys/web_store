@@ -19,6 +19,15 @@ class HomeLists(ListView):
         return Books.objects.filter(is_availible=True)  # .select_related('category')
 
 
+class BooksByWriter(ListView):
+    model = Books
+    template_name = 'shop/list_items.html'
+
+    def get_queryset(self):
+        # return Books.objects.filter(slug=self.kwargs['slug'], is_availible=True)
+        return Books.objects.filter(slug=self.kwargs['slug'], is_availible=True)
+
+
 class BookDetail(HitCountDetailView):
     model = Books
     # pk_url_kwarg = 'book_id'  default = pk
@@ -27,34 +36,41 @@ class BookDetail(HitCountDetailView):
 
 @login_required(login_url=reverse_lazy('login'))
 def cart_view(request):
-    my_balance  = Payment.get_balance(request.user)
+    my_balance = Payment.get_balance(request.user)
     cart = Order.get_cart(request.user)
     items = cart.orderitem_set.all()
     context = {
-        'my_balance':my_balance,
+        'my_balance': my_balance,
         'cart': cart,
         'items': items,
     }
     return render(request, 'shop/cart.html', context)
+
 
 @login_required(login_url=reverse_lazy('login'))
 def add_item_to_cart(request, pk):
     if request.method == 'POST':
         quantity_form = AddQuantityForm(request.POST)
         if quantity_form.is_valid():
-            quantity = quantity_form.cleaned_data['quantity']
-            if quantity:
+            quantity_new_val = quantity_form.cleaned_data['quantity']
+            if quantity_new_val:
                 cart = Order.get_cart(request.user)
                 # product = Product.objects.get(pk=pk)
                 product = get_object_or_404(Books, pk=pk)
+                # if product in cart.orderitem_set:
+                #     cart.orderitem_set.update(product=product,
+                #                               quantity+= quantity_new_val,
+                #                               price=product.price)
+                # else:
                 cart.orderitem_set.create(product=product,
-                                          quantity=quantity,
+                                          quantity=quantity_new_val,
                                           price=product.price)
                 cart.save()
                 return redirect('list_items')
         else:
             pass
     return redirect('list_items')
+
 
 # DoesNotExist at /delete_item/9  #ERROR Order matching query does not exist.
 @method_decorator(login_required, name='dispatch')
@@ -69,7 +85,8 @@ class CartDeleteItem(DeleteView):
         qs.filter(order__user=self.request.user)
         return qs
 
-# спроба №2  . не працює    type object 'OrderItem' has no attribute 'object'
+
+# спроба №2  . не працює    type object 'OrderItem' has no attribute 'objects'
 # def cart_remove(request, pk):
 #     cart = OrderItem(request)
 #     book = get_object_or_404(Books, id=pk)
@@ -80,11 +97,13 @@ def cart_remove(request, pk):
     order.delete()
     return redirect('cart_url')
 
+
 @login_required(login_url=reverse_lazy('login'))
 def make_order(request):
     cart = Order.get_cart(request.user)
     cart.make_order()
     return redirect('cart_url')
+
 
 def about(request):
     return render(request, 'shop/about.html')
