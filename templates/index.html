@@ -11,15 +11,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href=" {% static 'css/style.css' %}">
-{#    <link rel="stylesheet" type="text/css" href=" {% static 'css/style.css' %}?{% now " u"="" %}'>#}
-
+    {#    <link rel="stylesheet" type="text/css" href=" {% static 'css/style.css' %}?{% now " u"="" %}'>#}
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <title> {% block title %}Shop store{% endblock %} </title>
 </head>
 
 
 <body>
-<nav class=" navbar navbar-expand-lg navbar-dark bg-dark
-    " aria-label="Tenth navbar example">
+<nav class=" navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Tenth navbar example">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample08"
                 aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +47,7 @@
         </div>
         <span class="navbar-text">
             {% if user.is_authenticated %}
-                Hi, {{ user.username }} | <a href='{% url 'logout' %} ' >LogOut</a>
+                Hi, {{ user.username }} | <a href='{% url 'logout' %} '>LogOut</a>
             {% else %}
                 <a href="{% url 'register' %}">Sign up</a>|
                 <a href="{% url 'login' %}">Login</a>
@@ -53,36 +55,36 @@
 
 
     </div>
-    </nav>
+</nav>
 
 
-    <div class="container mt-3">
+<div class="container mt-3">
 
-        <div class="row">
+    <div class="row">
 
-            <div class="list-group col-md-2">
-                {% block sidebar %} sideBar {% endblock %}
-            </div>
+        <div class="list-group col-md-2">
+            {% block sidebar %} sideBar {% endblock %}
+        </div>
 
 
-            <div class="list-group col-md-10">
-                {% block card_items_container %} content {% endblock %}
-            </div>
+        <div class="list-group col-md-10">
+            {% block card_items_container %} content {% endblock %}
         </div>
     </div>
+</div>
 
-    <footer class="kost_footer">© 2022 Kostyreva V</footer>
-    <footer class="text-muted py-5">
-        <div class="container">
-            <p class="float-end mb-1">
-                <a href="#">عد إلى الأعلى</a>
-            </p>
-            <p class="mb-1">مثال الألبوم هو © <small>Kostyreva</small>   ، ولكن يرجى تنزيله وتخصيصه لنفسك!</p>
-            <p class="mb-0">جديد على Bootstrap؟ <a href="/"> تفضل بزيارة الصفحة الرئيسية </a> أو اقرأ <a
-                    href="/docs/5.2/getting-started/introduction/ "> دليل البدء </a>.</p>
-        </div>
-    </footer>
+<footer class="kost_footer">© 2022 Kostyreva V</footer>
+<footer class="text-muted py-5">
+    <div class="container">
+        <p class="float-end mb-1">
+            <a href="#">عد إلى الأعلى</a>
+        </p>
+        <p class="mb-1">مثال الألبوم هو © <small>Kostyreva</small> ، ولكن يرجى تنزيله وتخصيصه لنفسك!</p>
+        <p class="mb-0">جديد على Bootstrap؟ <a href="/"> تفضل بزيارة الصفحة الرئيسية </a> أو اقرأ <a
+                href="/docs/5.2/getting-started/introduction/ "> دليل البدء </a>.</p>
+    </div>
+</footer>
 
-    </body>
+</body>
 </html>
 
